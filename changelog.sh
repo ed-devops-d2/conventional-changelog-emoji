@@ -21,8 +21,9 @@ REPO_TYPE=$(git ls-remote --get-url)
 # Check if the git repository is in Gitblit or in GitHub
 if [[ "$REPO_TYPE" =~ .*"git.eurodyn.com".* ]];
 then
-  TAG1=`git describe --abbrev=0 --tags` # Get the latest git tag version number
-  TAG2=`git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1)` # Keep only the antecedent git tag version number
+  TAG1=`git tag --sort=taggerdate | tail -1` # Get the latest git tag version number
+  TAG2_2=`git tag --sort=taggerdate | tail -2` # Get the last two tag version numbers
+  TAG2=`echo $TAG2_2 | cut -d' ' -f1` # Keep only the antecedent git tag version number
 
   URL_REMOTE=`git config --get remote.origin.url` # Get the url of the remote git repository and save it to URL_REMOTE variable
   URL_GIT_ENDING=${URL_REMOTE::-4} # Trim the last 4 characters (i.e. '.git') of the remote url 
@@ -34,8 +35,8 @@ then
 
 elif [[ "$REPO_TYPE" =~ .*"github.com".* ]];
 then
-  TAG1=`git describe --abbrev=0 --tags` # Get the latest git tag version number
-  TAG2=`git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1)` # Keep only the antecedent git tag version number
+  TAG1=`git describe --abbrev=0 --tags`
+  TAG2=`git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1)`
 
   URL_REMOTE=`git config --get remote.origin.url` # Get the url of the remote git repository and save it to URL_REMOTE variable
   URL_GIT_ENDING=${URL_REMOTE::-4} # Trim the last 4 characters (i.e. '.git') of the remote url
